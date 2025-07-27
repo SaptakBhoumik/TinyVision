@@ -3,7 +3,7 @@
 **TinyVision** is an evolving research project focused on designing **ultra-lightweight image classification models** with minimal parameter counts. The goal is to explore what’s *actually necessary* for fundamental vision tasks by combining **handcrafted feature preprocessing** with highly efficient CNN architectures.
 
 📦 **Current Release**: [v2.0.0](https://github.com/SaptakBhoumik/TinyVision/releases/tag/v2.0.0)  
-📁 **Latest Results & Code**: See the `final/v2` directory
+📁 **Latest Results & Code**: See the `cat_vs_dog_classifier/final/v2` directory
 
 > ⚠️ This release **does not include a paper**, but focuses on the **codebase**, experiment results, and reproducible training scripts. A deeper analysis and formal documentation will come in future updates.
 
@@ -15,7 +15,7 @@
   First completed task using a 25,000-image dataset with handcrafted preprocessing + compact CNNs.  
   - Achieved **up to 86.87% test accuracy** with models under **12.5k parameters**
   - Several models under **5k parameters** reached over **83% accuracy**, showcasing strong efficiency-performance trade-offs.
-  - 📂 Final results and code for this task are in the `final/v2` directory.
+  - 📂 Final results and code for this task are in the `cat_vs_dog_classifier/final/v2` directory.
 
 ---
 
