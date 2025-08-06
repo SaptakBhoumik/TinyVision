@@ -31,6 +31,18 @@
 
 ---
 
+## 🧠 Technical Analysis & Insights
+
+For a detailed analysis of what makes TinyVision's approach so effective, including architectural insights, performance analysis, and future research directions, see: **[THOUGHTS_AND_ANALYSIS.md](./THOUGHTS_AND_ANALYSIS.md)**
+
+This document provides:
+- Deep dive into the preprocessing + compact CNN approach
+- Analysis of why these tiny models achieve such strong performance
+- Technical insights about architectural design choices
+- Suggestions for future improvements and research directions
+
+---
+
 ## 🤝 Contributing
 
 This project is currently personal and tracks my ongoing experiments.  
