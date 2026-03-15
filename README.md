@@ -10,8 +10,9 @@
 
 > ⚠️ This release **does not include a paper**, but focuses on the **codebase**, experiment results, and reproducible training scripts. A deeper analysis and formal documentation will come in future updates. -->
 
-I am still writting the report for V3 but you can read the draft for V3 report [here](paper/tinyvision/pdf/v3.pdf) (not final yet, will be updated soon)
-You can also read the note for my personal thought [here](cifar10_classifier/final/V1/note.txt). IT is not polished but a good refernce point 
+I am still writting the report for V3 but you can read the draft for V3 report [here](paper/pdf/v3.pdf) (not final yet, will be updated soon).
+
+You can also read the note for my personal thought [here](cifar10_classifier/final/V1/note.txt). It is not polished but a good refernce point 
 
 ## V3 report coming very soon
 

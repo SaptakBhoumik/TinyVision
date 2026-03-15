@@ -1,0 +1,344 @@
+NOTE:-Just my innitial thoughs and observation. Strong pattern but I wont say conclusive yet(Kinda stuck how exacly to do that)
+NOTE:-I didnt run will diffrent seeds/innitialization yet but I will do that later for the final version. But the pattern is strong enough that I am pretty sure 
+it will hold for different seeds as well.
+NOTE:-I have only written the note with test accuracy because that is what matters most but I have also written the training accuracy before
+model0,model1,model2,model3:-Testing various position of maxpool
+model4,model5,model6,model7:-Using PRelu instead of ReLU
+model8,model9,model10,model11:-Remove pointwise from block4
+model12,model13,model14,model15:-Remove pointwise from block3
+model16,model17,model18,model19:-Remove pointwise from block2
+model20,model21,model22,model23:-Remove pointwise from block1
+model25 - model43:-Now we mess around with the number of channels in block4.
+
+NOTE:-Also compare training accuracy to check for overfitting compared to accuracy gain/loss in test
+model4 is a clear successor to model0 because test accuracy increased but train accuracy didnt increase much
+model5 is a clear successor to model1 because test accuracy increased but train accuracy didnt increase much
+model6 is a clear successor to model2 because test accuracy increased but train accuracy didnt increase much. This one is most important because the diffrence in accuracy
+Now why I think model6 does it better. Putting MaxPool after the Relu is normally the way to do. But this model is tiny so even the negative values can be useful
+So maxpool after relu can away useful info. THis is also why either maxpool after relu performs bad or same than the one with maxpool before relu
+But with prelu the negative values can be useful and maxpool after prelu can perform better than maxpool before prelu. Although it is still not conclusive enough so 
+I will keep the base of model4,model5 and model6 and try to remove layer and see. Not keeping model3 and model7 cuz they are worse and perform same
+Although improvement after prelu makes sense but the fact that is important is that the position of maxpool is also relevent
+
+Like(-> mean to replace the relu with prelu and in bracket i mentioned max test accuracy)
+model0(87.58%) -> model4(87.86%)
+model1(87.57%) -> model5(87.77%)
+model2(87.22%) -> model6(87.94%)
+model3(87.51%) -> model7(87.42%)
+
+model0,model4 are not the norm(Pool before relu of depthwise conv)
+model1,model5 are the norm(Pool after relu of pointwise conv)
+model2,model6 are the norm but rares(Pool after relu of depthwise conv)
+model3,model7 are not the norm(Pool before relu of pointwise conv)
+
+model0,model1,model3 are kinda equivalent
+model2 is significantly bad compared to model0,model1,model3. Hence my hypothesis that maxpool after relu loses useful info due to lack of negative value. 
+Although this is still hypothesis(If model3 performed worse then it would have more weight but it is not the case)
+
+Now when we switch to prelu,model6 which is basically the norm is better than model4,model5,model7 and also better than model2 significantly. I attribut to the fact 
+that prelu can keep the negative values and maxpool after prelu can perform better than maxpool after relu. Although it is still not conclusive enough.
+Not to mention that model4 performed better than model5 when model5 should have been better or equivalent(Cuz it also has access to negative values) 
+Model7 is the odd one cuz it's performance degraded a bit compared to model3
+
+Atleast these prove that prelu helps(Which is kinda expected) and also the position of maxpool is relevant.
+Although more experiments are needed to be more conclusive about the position of maxpool which is why when I trim it down I will keep the base of model4,model5 and model6 
+and try to remove layer and see. Not keeping model7 cuz it is worse although for sake of argument I may keep model7. Let's see 
+Another hypothesis:Also I think personally that pool before or after the activation of the depthwise conv makes more sense because if it is before or after the 
+pointwise conv cuz atleast for small model like this, the info after pointwise conv is more complex than the one after depthwise conv and maxpool can have a hard time
+compacting the info. Why I say this? Cuz model5,model7 both perform worse than model4 and model6 i.e min(accuracy of model5,model7) < min(accuracy of model4,model6) and model5,model7 are the ones with maxpool after pointwise conv. Although this is still not conclusive enough but it is a strong pattern.
+This is not visible in model0,model1,model3 cuz Relu was already suboptimal
+
+The last block already has a very small spacial dimension so for model8,model9,model10,model11 removing pointwise conv from block3 shouldnt affect much
+but removing from block4 should have an effect which we see in model12,model13,model14,model15
+
+128 batch:-
+Stage 0:-model4(87.86%),model5(87.77%),model6(87.94%),model7(87.42%)
+Stage 1:-model8(87.43%),model9(87.63%),model10(87.77%),model11(87.37%)
+Stage 2:-model12(85.99%),model13(86.47%),model14(86.24%),model15(85.93%)
+Stage 3:-model16(86.12%),model17(86.35%),model18(86.81%),model19(86.35%)
+Stage 4:-model20(86.66%),model21(87.20%),model22(86.55%),model23(87.07%)
+
+Stage 0 :- All blocks have pointwise conv
+Stage 1 :- Block4 has no pointwise conv
+Stage 2 :- Block3 has no pointwise conv
+Stage 3 :- Block2 has no pointwise conv
+Stage 4 :- Block1 has no pointwise conv
+
+Model arcitecture 0 :- model4,model8,model12,model16,model20
+Model arcitecture 1 :- model5,model9,model13,model17,model21
+Model arcitecture 2 :- model6,model10,model14,model18,model22
+Model arcitecture 3 :- model7,model11,model15,model19,model23
+
+Model arcitecture 0:-Has maxpool before prelu of depthwise conv
+Model arcitecture 1:-Has maxpool after prelu of pointwise conv
+Model arcitecture 2:-Has maxpool after prelu of depthwise conv
+Model arcitecture 3:-Has maxpool before prelu of pointwise conv
+
+Rank of model arcitecture 0:-2,3,3,3,2:-Avg rank 2.6
+Rank of model arcitecture 1:-3,2,1,2,1:-Avg rank 1.8
+Rank of model arcitecture 2:-1,1,2,1,3:-Avg rank 1.6
+Rank of model arcitecture 3:-4,4,4,2,4:-Avg rank 3.6
+ 
+Winner is model arcitecture 2 but I will also take model arcitecture 1 for the next stage because it is also close
+
+64 batch:-
+Stage 0:-model4(88.36%),model5(88.36%),model6(88.63%),model7(87.83%)
+Stage 1:-model8(88.36%),model9(88.11%),model10(87.96%),model11(87.76%)
+Stage 2:-model12(86.44%),model13(86.80%),model14(86.88%),model15(86.89%)
+Stage 3:-model16(86.53%),model17(86.62%),model18(87.76%),model19(86.70%)
+Stage 4:-model20(86.88%),model21(86.70%),model22(86.93%),model23(86.91%)
+
+Stage 0 :- All blocks have pointwise conv
+Stage 1 :- Block4 has no pointwise conv
+Stage 2 :- Block3 has no pointwise conv
+Stage 3 :- Block2 has no pointwise conv
+Stage 4 :- Block1 has no pointwise conv
+
+Model arcitecture 0 :- model4,model8,model12,model16,model20
+Model arcitecture 1 :- model5,model9,model13,model17,model21
+Model arcitecture 2 :- model6,model10,model14,model18,model22
+Model arcitecture 3 :- model7,model11,model15,model19,model23
+
+Model arcitecture 0:-Has maxpool before prelu of depthwise conv
+Model arcitecture 1:-Has maxpool after prelu of pointwise conv
+Model arcitecture 2:-Has maxpool after prelu of depthwise conv
+Model arcitecture 3:-Has maxpool before prelu of pointwise conv
+
+Rank of model arcitecture 0:-2,1,4,4,3:-Avg rank 2.8
+Rank of model arcitecture 1:-2,2,3,3,4:-Avg rank 2.8
+Rank of model arcitecture 2:-1,3,2,1,1:-Avg rank 1.6
+Rank of model arcitecture 3:-3,4,1,2,2:-Avg rank 2.4
+
+Winner is model arcitecture 2 but I will also take model arcitecture 1 for the next stage because it was choosen in batch 128
+
+
+Batch 128
+Model arcitecture 0:-Has maxpool after prelu of pointwise conv
+Model arcitecture 1:-Has maxpool after prelu of depthwise conv
+
+Stage 0:-model24(87.14%),model25(87.30%)
+Stage 1:-model26(87.46%),model27(87.86%)
+stage 2 :-model28(87.06%),model29(87.37%)
+stage 3:-model30(86.38%),model31(86.27%)
+
+Rank of model arcitecture 0:-2,2,2,1:-Avg rank 1.75
+Rank of model arcitecture 1:-1,1,1,2:-Avg rank 1.25
+
+Batch 64
+Model arcitecture 0:-Has maxpool after prelu of pointwise conv
+Model arcitecture 1:-Has maxpool after prelu of depthwise conv
+
+Stage 0:-model24(86.62%),model25(86.74%)
+Stage 1:-model26(87.11%),model27(87.94%)
+stage 2 :-model28(86.73%),model29(87.91%)
+stage 3:-model30(86.30%),model31(86.36%)
+
+Rank of model arcitecture 0:-2,2,2,2:-Avg rank 2
+Rank of model arcitecture 1:-1,1,1,1:-Avg rank 1
+
+We move forward only with arcitecture 1
+
+Batch 128
+We follow model arcitecture 1 from above but without the pointwise conv in block4
+
+Stage 0(Maxpool):-model32(87.17%),model33(87.48%),model34(86.92%),model35(85.77%)
+Stage 1(HybridPoolingV0(nn.MaxPool2d,nn.AvgPool2d)):-model36(87.34%),model37(87.83%),model38(87.81%),model39(87.31%)
+Stage 2(HybridPoolingV0(nn.AvgPool2d,nn.MaxPool2d)):-model40(87.43%),model41(88.12%),model42(88.04%),model43(86.65%)
+
+
+
+
+Batch 64
+We follow model arcitecture 1 from above but without the pointwise conv in block4
+
+Stage 0(Maxpool):-model32(87.11%),model33(87.36%),model34(87.30%),model35(85.80%)
+Stage 1(HybridPoolingV0(nn.MaxPool2d,nn.AvgPool2d)):-model36(87.43%),model37(88%),model38(88.41%),model39(87.06%)
+Stage 2(HybridPoolingV0(nn.AvgPool2d,nn.MaxPool2d)):-model40(87.58%),model41(88.21%),model42(88.43%),model43(87.38%)
+
+
+Only the 2 HybridPoolingV0 variation are used cuz they proved superior during cat vs dog classifcation 
+
+!pip install torchinfo
+!pip install seaborn
+!pip install ptflops
+
+
+import anywidget
+import traitlets
+import os
+import base64
+import mimetypes
+
+class FileDownloader(anywidget.AnyWidget):3,
+    """
+    An anywidget that renders a button. When clicked, it triggers a server-side
+    read of 'file_path' and sends the content to the browser for download.
+
+    The button starts disabled and only enables after a successful handshake
+    with the Python kernel, ensuring it doesn't appear active in a dead notebook.
+    """
+
+    # The path to the file on the server/local disk that you want to download
+    file_path = traitlets.Unicode(help="Path to the file to be downloaded").tag(sync=True)
+
+    # Label for the button
+    button_text = traitlets.Unicode("Download File").tag(sync=True)
+
+    _esm = """
+    export function render({ model, el }) {
+      // Create the button element
+      let btn = document.createElement("button");
+      btn.classList.add("jupyter-widgets", "jupyter-button", "widget-button");
+      btn.style.width = "100%";
+
+      // Initial state: Disabled and waiting
+      btn.innerText = "Waiting for Kernel...";
+      btn.disabled = true;
+
+      // Update button text if the Python trait changes
+      model.on("change:button_text", () => {
+        // Only update visually if we are already connected/enabled
+        if (!btn.disabled) {
+            btn.innerText = model.get("button_text");
+        }
+      });
+
+      // Handle the click event
+      btn.addEventListener("click", () => {
+        const filePath = model.get("file_path");
+
+        if (!filePath) {
+            alert("No file path set in the Python widget!");
+            return;
+        }
+
+        // Disable button and show loading state
+        const originalText = btn.innerText;
+        btn.innerText = "Downloading...";
+        btn.disabled = true;
+
+        // Send a request message to the Python backend
+        model.send({ type: "request_download" });
+
+        // Helper to restore button state
+        const restoreBtn = () => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        };
+
+        // Timeout safety to restore button if Python doesn't respond within 5s
+        setTimeout(restoreBtn, 5000);
+      });
+
+      el.appendChild(btn);
+
+      // Listen for messages coming from Python
+      model.on("msg:custom", (msg) => {
+        if (msg.type === "connection_verified") {
+            // HANDSHAKE COMPLETE: Kernel is alive.
+            btn.disabled = false;
+            btn.innerText = model.get("button_text");
+        }
+        else if (msg.type === "file_content") {
+            // 1. Create a Blob from the Base64 data
+            const byteCharacters = atob(msg.content);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: msg.mime_type });
+
+            // 2. Create a temporary link to trigger the download
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.style.display = "none";
+            a.href = url;
+            a.download = msg.filename;
+            document.body.appendChild(a);
+            a.click();
+
+            // 3. Cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            // Restore button text
+            btn.innerText = model.get("button_text");
+            btn.disabled = false;
+
+        } else if (msg.type === "error") {
+            alert(`Error: ${msg.message}`);
+            btn.innerText = model.get("button_text");
+            btn.disabled = false;
+        }
+      });
+
+      // INITIATE HANDSHAKE
+      // Send a message to Python to check if the kernel is listening.
+      // If the kernel is dead (saved notebook), this message goes nowhere,
+      // and the button remains disabled.
+      setTimeout(() => {
+        model.send({ type: "check_connection" });
+      }, 500);
+    }
+    """
+
+    def __init__(self, file_path=None, **kwargs):
+        super().__init__(**kwargs)
+        if file_path:
+            self.file_path = file_path
+
+        # Register the message handler
+        self.on_msg(self._handle_custom_msg)
+
+    def _handle_custom_msg(self, msg, content):
+        """
+        Callback for when the frontend sends a message to Python.
+        """
+        msg_type = msg.get("type")
+
+        if msg_type == "check_connection":
+            # Reply to the frontend to confirm we are alive
+            self.send({"type": "connection_verified"})
+
+        elif msg_type == "request_download":
+            self._process_download()
+
+    def _process_download(self):
+        """
+        Reads the file from disk and sends it to the frontend.
+        """
+        target_path = self.file_path
+
+        # Basic validation
+        if not target_path:
+            self.send({"type": "error", "message": "File path is not defined."})
+            return
+
+        if not os.path.exists(target_path):
+            self.send({"type": "error", "message": f"File not found: {target_path}"})
+            return
+
+        try: 
+            # Guess the MIME type so the browser handles it correctly
+            mime_type, _ = mimetypes.guess_type(target_path)
+            if mime_type is None:
+                mime_type = 'application/octet-stream'
+
+            # Read and encode the file
+            with open(target_path, "rb") as f:
+                file_content = f.read()
+
+            b64_content = base64.b64encode(file_content).decode("utf-8")
+
+            # Send back to JS
+            self.send({
+                "type": "file_content",
+                "filename": os.path.basename(target_path),
+                "mime_type": mime_type,
+                "content": b64_content
+            })
+
+        except Exception as e:
+            self.send({"type": "error", "message": str(e)})
+FileDownloader(file_path="model_weights/model7_1.pt")
