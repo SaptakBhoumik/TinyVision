@@ -1,14 +1,12 @@
 # 🧠 TinyVision: Compact Vision Models with Minimal Parameters
 
 **TinyVision** is an evolving research project focused on designing **ultra-lightweight image classification models** with minimal parameter counts. The goal is to explore what’s *actually necessary* for fundamental vision tasks by combining **handcrafted feature preprocessing** with highly efficient CNN architectures.
-<!-- 
-📦 **Current Release**: [v2.0.0](https://github.com/SaptakBhoumik/TinyVision/releases/tag/v2.0.0) 
 
-🔖 **Zenodo DOI**: [10.5281/zenodo.16467349](https://doi.org/10.5281/zenodo.16467349)  
+📦 **Prev Release**: [v2.0.0](https://github.com/SaptakBhoumik/TinyVision/releases/tag/v2.0.0) 
 
-📁 **Latest Results & Code**: See the `cat_vs_dog_classifier/final/v2` directory
+🔖 **Zenodo DOI of V2**: [10.5281/zenodo.16467349](https://doi.org/10.5281/zenodo.16467349)  
 
-> ⚠️ This release **does not include a paper**, but focuses on the **codebase**, experiment results, and reproducible training scripts. A deeper analysis and formal documentation will come in future updates. -->
+> ⚠️ V2 release **does not include a paper**, but focuses on the **codebase**, experiment results, and reproducible training scripts. A deeper analysis and formal documentation will come in future updates. 
 
 I am still writting the report for V3 but you can read the draft for V3 report [here](paper/pdf/v3.pdf) (not final yet, will be updated soon).
 
