@@ -158,6 +158,9 @@ Stage 2(HybridPoolingV0(nn.AvgPool2d,nn.MaxPool2d)):-model40(87.58%),model41(88.
 
 Only the 2 HybridPoolingV0 variation are used cuz they proved superior during cat vs dog classifcation 
 
+Only use model of stage 2 for quantization study
+
+
 !pip install torchinfo
 !pip install seaborn
 !pip install ptflops
