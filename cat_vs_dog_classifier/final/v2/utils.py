@@ -22,7 +22,9 @@ class SplitLoader:
             dog_chunks.append(os.path.join(data_path, 'dog', "original", file))
         cat_chunks = sorted(cat_chunks)
         dog_chunks = sorted(dog_chunks)
-            
+
+        if len(cat_chunks)!=len(dog_chunks):
+            raise ValueError(f'Mismatch: {len(cat_chunks)} cat chunks but {len(dog_chunks)} dog chunks')
         # self.data_path = data_path
         np.random.seed(42)  # For reproducibility
         self.cat_chunks = np.random.permutation(cat_chunks)
